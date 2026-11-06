@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">FluxPlayer</string>
+    <string name="open_file">Open Video File</string>
+    <string name="no_file_selected">Select a video using the Storage Access Framework (SAF)</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="seek_forward">Seek forward 10s</string>
+    <string name="seek_backward">Seek backward 10s</string>
+</resources>
+
