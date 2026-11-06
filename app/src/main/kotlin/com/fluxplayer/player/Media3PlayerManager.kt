@@ -2,6 +2,8 @@ package com.fluxplayer.player
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build
+import android.view.WindowManager
 import androidx.annotation.OptIn
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
@@ -14,6 +16,7 @@ import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import com.fluxplayer.data.datasource.FluxDataSourceFactory
+import com.fluxplayer.player.frc.FrcGlEffect
 import com.fluxplayer.ui.player.state.PlayerState
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -37,6 +40,8 @@ class Media3PlayerManager @Inject constructor(
     private val scope = CoroutineScope(Dispatchers.Main + Job())
     private var progressJob: Job? = null
 
+    val frcGlEffect = FrcGlEffect()
+
     val exoPlayer: ExoPlayer = createExoPlayer()
 
     private val _playerState = MutableStateFlow(PlayerState())
@@ -57,6 +62,7 @@ class Media3PlayerManager @Inject constructor(
             .setHandleAudioBecomingNoisy(true)
             .build()
             .apply {
+                setVideoEffects(listOf(frcGlEffect))
                 addListener(createPlayerListener())
             }
     }
@@ -131,14 +137,36 @@ class Media3PlayerManager @Inject constructor(
         exoPlayer.prepare()
         exoPlayer.playWhenReady = true
 
+        val refreshRate = getDisplayRefreshRate()
         _playerState.update {
             it.copy(
                 uri = uri,
                 title = title,
                 errorMessage = null,
-                isEnded = false
+                isEnded = false,
+                displayRefreshRate = refreshRate
             )
         }
+    }
+
+    fun setFrcEnabled(enabled: Boolean) {
+        frcGlEffect.enabled = enabled
+        _playerState.update { it.copy(frcEnabled = enabled) }
+    }
+
+    fun setFrcBlendWeight(weight: Float) {
+        frcGlEffect.blendWeight = weight.coerceIn(0f, 1f)
+    }
+
+    fun getDisplayRefreshRate(): Float {
+        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as? WindowManager
+        val display = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            context.display ?: windowManager?.defaultDisplay
+        } else {
+            @Suppress("DEPRECATION")
+            windowManager?.defaultDisplay
+        }
+        return display?.mode?.refreshRate ?: 60f
     }
 
     fun play() {

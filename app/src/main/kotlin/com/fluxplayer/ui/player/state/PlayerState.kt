@@ -14,7 +14,9 @@ data class PlayerState(
     val videoHeight: Int = 0,
     val isEnded: Boolean = false,
     val errorMessage: String? = null,
-    val controlsVisible: Boolean = true
+    val controlsVisible: Boolean = true,
+    val displayRefreshRate: Float = 60f,
+    val frcEnabled: Boolean = true
 ) {
     val progress: Float
         get() = if (durationMs > 0) {

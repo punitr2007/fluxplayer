@@ -86,16 +86,24 @@ fun PlayerControls(
                     )
                 }
 
-                Text(
-                    text = playerState.title.ifEmpty { "FluxPlayer" },
-                    style = MaterialTheme.typography.titleLarge,
-                    color = Color.White,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+                Column(
                     modifier = Modifier
                         .weight(1f)
                         .padding(horizontal = 8.dp)
-                )
+                ) {
+                    Text(
+                        text = playerState.title.ifEmpty { "FluxPlayer" },
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        text = if (playerState.frcEnabled) "FRC Active • Target: ${playerState.displayRefreshRate.toInt()}Hz" else "FRC Disabled",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = PrimaryTeal
+                    )
+                }
 
                 IconButton(onClick = onOpenFileClick) {
                     Icon(

@@ -62,6 +62,10 @@ class PlayerViewModel @Inject constructor(
 
     fun closePlayer() = playerManager.close()
 
+    fun setFrcEnabled(enabled: Boolean) = playerManager.setFrcEnabled(enabled)
+
+    fun setFrcBlendWeight(weight: Float) = playerManager.setFrcBlendWeight(weight)
+
     // --- Network Management ---
 
     fun selectProtocol(protocol: NetworkProtocol) {
