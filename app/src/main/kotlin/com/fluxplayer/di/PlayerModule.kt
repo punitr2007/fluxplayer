@@ -2,6 +2,7 @@ package com.fluxplayer.di
 
 import android.content.Context
 import androidx.media3.exoplayer.ExoPlayer
+import com.fluxplayer.data.datasource.FluxDataSourceFactory
 import com.fluxplayer.player.Media3PlayerManager
 import dagger.Module
 import dagger.Provides
@@ -17,9 +18,10 @@ object PlayerModule {
     @Provides
     @Singleton
     fun provideMedia3PlayerManager(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
+        fluxDataSourceFactory: FluxDataSourceFactory
     ): Media3PlayerManager {
-        return Media3PlayerManager(context)
+        return Media3PlayerManager(context, fluxDataSourceFactory)
     }
 
     @Provides

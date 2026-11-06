@@ -19,6 +19,7 @@
         android:name=".FluxApplication"
         android:allowBackup="true"
         android:requestLegacyExternalStorage="true"
+        android:usesCleartextTraffic="true"
         android:icon="@android:drawable/ic_media_play"
         android:label="FluxPlayer"
         android:roundIcon="@android:drawable/ic_media_play"

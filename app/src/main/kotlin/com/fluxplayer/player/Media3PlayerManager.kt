@@ -10,7 +10,10 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import com.fluxplayer.data.datasource.FluxDataSourceFactory
 import com.fluxplayer.ui.player.state.PlayerState
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -28,7 +31,8 @@ import javax.inject.Singleton
 
 @Singleton
 class Media3PlayerManager @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    val fluxDataSourceFactory: FluxDataSourceFactory
 ) {
     private val scope = CoroutineScope(Dispatchers.Main + Job())
     private var progressJob: Job? = null
@@ -45,7 +49,10 @@ class Media3PlayerManager @Inject constructor(
             .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
             .build()
 
+        val mediaSourceFactory = DefaultMediaSourceFactory(fluxDataSourceFactory)
+
         return ExoPlayer.Builder(context)
+            .setMediaSourceFactory(mediaSourceFactory)
             .setAudioAttributes(audioAttributes, true)
             .setHandleAudioBecomingNoisy(true)
             .build()
@@ -191,6 +198,12 @@ class Media3PlayerManager @Inject constructor(
     private fun stopProgressTracker() {
         progressJob?.cancel()
         progressJob = null
+    }
+
+    fun close() {
+        exoPlayer.stop()
+        exoPlayer.clearMediaItems()
+        _playerState.update { PlayerState() }
     }
 
     fun release() {

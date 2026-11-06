@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
                     PlayerScreen(
                         viewModel = playerViewModel,
                         onBackClick = {
-                            playerViewModel.togglePlayPause()
+                            playerViewModel.closePlayer()
                         },
                         onOpenFileClick = {
                             openSafPicker()
@@ -53,6 +53,7 @@ class MainActivity : ComponentActivity() {
                     )
                 } else {
                     HomeScreen(
+                        viewModel = playerViewModel,
                         onVideoSelected = { uri ->
                             playerViewModel.loadMedia(uri)
                         },
